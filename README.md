@@ -18,7 +18,7 @@ The project is built under **Clean Architecture** and **SOLID** principles, ensu
 
 ## 🧠 Why This Architecture?
 
-In high-scale and sensitive systems (such as **National Census** processing or **Core Banking** platforms), access is only the first step. This architecture mitigates risks through:
+In high-scale and sensitive systems, access is only the first step. This architecture mitigates risks through:
 
 1.  **Logic Isolation:** Security is not a "patch"; it is a first-class citizen in the infrastructure layer.
 2.  **Shielded Payloads:** Demonstrates how to move sensitive data (messages or session keys) where traffic interception does not compromise the information.
@@ -61,7 +61,7 @@ El proyecto está construido bajo los principios de **Clean Architecture** y **S
 
 ## 🧠 ¿Por qué esta arquitectura?
 
-En sistemas de alta escala (como el procesamiento de datos del **Censo Nacional**), esta arquitectura mitiga riesgos mediante:
+En sistemas de alta escala, esta arquitectura mitiga riesgos mediante:
 
 1.  **Aislamiento de Lógica:** La seguridad no es un parche, es parte del núcleo de la infraestructura.
 2.  **Payloads Blindados:** Asegura que la interceptación del tráfico no comprometa la información sensible del usuario.
