@@ -46,7 +46,10 @@ In high-scale and sensitive systems, access is only the first step. This archite
 
 # Versión en Español
 
-Este repositorio proporciona una arquitectura base para sistemas de **misión crítica** que requieren los más altos estándares de seguridad en la gestión de identidades y la integridad de los datos. A diferencia de las implementaciones estándar, este boilerplate introduce una capa de **encriptación de extremo a extremo (E2E)** siguiendo principios de **Zero-Knowledge**.
+Este repositorio proporciona una **arquitectura base** para sistemas que requieren altos estándares de seguridad en la gestión de identidades e integridad de datos.
+
+> [!IMPORTANT]
+> **Estado del Proyecto: Maqueta Básica.** Este es un esqueleto estructural y un boilerplate fundamental. Está diseñado para servir como punto de partida y no como un producto final "listo para usar" en producción sin implementaciones adicionales.
 
 ## 🚀 Arquitectura y Principios
 
