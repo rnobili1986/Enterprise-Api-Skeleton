@@ -10,14 +10,25 @@ This repository provides a **foundational architecture** for systems requiring h
 The project is built under **Clean Architecture** and **SOLID** principles, ensuring security logic is decoupled from infrastructure and easily auditable.
 
 * **Identity Management:** Robust **JWT (JSON Web Tokens)** implementation with custom claims validation.
-* **E2E Security (Secure Vault):** Messaging flow using hybrid cryptography (`System.Security.Cryptography`) to ensure the server can deliver sensitive information that only the authorized client can decrypt.
-* **Decoupled Structure:** Strict separation between Domain, Application, Infrastructure, and API layers to maintain a clean codebase.
+* **E2E Security (Secure Vault):** Messaging flow using hybrid cryptography (`System.Security.Cryptography`) with dynamic IVs to ensure data integrity.
+* **Hybrid Context Validation:** Dual-layer security combining **JWT** (Identity) with **Encrypted HttpOnly Cookies** (Context).
+* **Decoupled Structure:** Strict separation between Domain, Application, Infrastructure, and API layers.
 
 ## ✨ Key Features
 
 * ✅ **Centralized Auth Flow:** Designed to operate as a centralized authentication service for microservices ecosystems.
 * ✅ **Cryptographic Vault:** Clean implementation of encryption services (AES-256) injected via interfaces.
+* ✅ **Action Filter Security:** Custom `[ValidateUserContext]` attribute that intercepts requests to verify secure cookies before reaching the controller.
 * ✅ **Enterprise Standards:** Code ready to pass security audits and comply with data protection regulations (GDPR / Privacy Laws).
+
+## 🛡️ Advanced Security Flow (Zero-Trust)
+
+In high-scale and sensitive systems, access is only the first step. This architecture mitigates risks through a **Defense in Depth** approach:
+
+1. **Authentication:** The server issues a JWT for identity and a secondary encrypted "Secure Context" stored in a `HttpOnly` / `Secure` cookie.
+2. **Interception:** A custom Action Filter (`ValidateUserContext`) intercepts requests to protected resources.
+3. **Double-Check:** Access is granted only if the JWT is valid **AND** the encrypted cookie can be successfully decrypted/validated by the server's internal vault.
+4. **Shielded Payloads:** Demonstrates how to move sensitive session data where traffic interception (XSS) does not compromise the information.
 
 ## 🧠 Why This Architecture?
 
@@ -63,12 +74,19 @@ Este repositorio proporciona una **arquitectura base** para sistemas que requier
 
 ## 🚀 Arquitectura y Principios
 
-El proyecto está construido bajo los principios de **Clean Architecture** y **SOLID**, garantizando que la lógica de seguridad esté desacoplada de la infraestructura y sea fácilmente auditable.
-
-* **Gestión de Identidad:** Implementación robusta de **JWT** con validación de claims personalizada.
-* **Seguridad E2E (Secure Vault):** Flujo de mensajería que utiliza criptografía híbrida para asegurar que la información sensible solo sea accesible por clientes autorizados.
+* **Gestión de Identidad:** Implementación robusta de **JWT** con validación de claims.
+* **Seguridad E2E (Secure Vault):** Flujo de mensajería con criptografía híbrida y IVs dinámicos.
+* **Validación de Contexto Híbrida:** Seguridad de doble capa que combina **JWT** (Identidad) con **Cookies Cifradas HttpOnly** (Contexto).
 * **Estructura Desacoplada:** Separación estricta entre las capas de Dominio, Aplicación, Infraestructura y API.
 
+## 🛡️ Flujo de Seguridad Avanzado (Zero-Trust)
+
+Este sistema no solo verifica si tienes una llave, sino que asegura que la llave pertenezca a la mano que la sostiene:
+
+1. **Autenticación:** El servidor emite un JWT y un payload secundario cifrado almacenado en una cookie `HttpOnly`.
+2. **Intercepción:** Un **Action Filter** personalizado (`ValidateUserContext`) intercepta las peticiones.
+3. **Doble Validación:** El acceso se concede solo si el JWT es válido **Y** la cookie cifrada puede ser descifrada por la bóveda interna del servidor.
+   
 ## ✨ Características Destacadas
 
 * ✅ **Flujo de Auth Centralizado:** Diseñado para operar como un servicio de autenticación central para ecosistemas complejos.
