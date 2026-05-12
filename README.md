@@ -33,6 +33,16 @@ In high-scale and sensitive systems, access is only the first step. This archite
 * **Security:** JWT, AES-256.
 * **Architecture:** Clean Architecture / DDD Pattern.
 
+## 🚀 Roadmap & Potential Enhancements
+
+This is a living skeleton. Future improvements or production-hardening steps could include:
+* **MFA Integration:** Support for Multi-Factor Authentication (TOTP, SMS).
+* **External Identity Providers:** Integration with Auth0, Azure AD, or Google Identity.
+* **Refresh Token Pattern:** Implementation of persistent sessions via secure refresh tokens.
+* **Rate Limiting:** Protection against brute-force attacks at the API level.
+* **Secrets Management:** Integration with Azure Key Vault or HashiCorp Vault (moving away from `appsettings.json`).
+* **Unit & Integration Tests:** Full coverage of the cryptographic and auth layers.
+
 ## ⚙️ Installation
 
 1.  **Clone the repository:**
@@ -78,6 +88,16 @@ En sistemas de alta escala, esta arquitectura mitiga riesgos mediante:
 * **Lenguaje:** C#
 * **Seguridad:** JWT, AES-256.
 * **Arquitectura:** Clean Architecture / DDD Pattern.
+
+## 🚀 Próximas Mejoras y Posibles Evoluciones
+
+Al ser una maqueta base, existen varios caminos para robustecer el sistema:
+* **Integración de MFA:** Soporte para Autenticación de Múltiples Factores (TOTP, SMS).
+* **Proveedores Externos:** Integración con Auth0, Azure AD o Google Identity.
+* **Patrón de Refresh Tokens:** Implementación de sesiones persistentes seguras.
+* **Rate Limiting:** Protección contra ataques de fuerza bruta.
+* **Gestión de Secretos:** Integración con Azure Key Vault o HashiCorp Vault (evitando `appsettings.json`).
+* **Tests Unitarios e Integración:** Cobertura total de las capas criptográficas y de autenticación.
 
 ## ⚙️ Instalación
 
