@@ -8,99 +8,110 @@ namespace CoreNexus.Infrastructure.Services;
 public class SecureVaultService : ISecureVaultService
 {
     private readonly byte[] _key1;
-    private readonly byte[] _iv1;
     private readonly byte[] _aesKey;
-    private readonly byte[] _aesIv;
 
     public SecureVaultService(IConfiguration config)
     {
-        // Recuperamos las llaves desde la configuración
-        _key1 = StringToByteArray(config["SecureVault:Key1"]);
-        _iv1 = StringToByteArray(config["SecureVault:IV1"]);
-        _aesKey = Convert.FromBase64String(config["SecureVault:AesKey"]);
-        _aesIv = Convert.FromBase64String(config["SecureVault:AesIV"]);
+        // Solo recuperamos las llaves. Los IVs ahora se generan dinámicamente por cada mensaje.
+        _key1 = StringToByteArray(config["SecureVault:Key1"] ?? throw new InvalidOperationException("Key1 is missing in configuration."));
+        _aesKey = Convert.FromBase64String(config["SecureVault:AesKey"] ?? throw new InvalidOperationException("AesKey is missing in configuration."));
     }
 
     public string Protect(string plainText)
     {
         if (string.IsNullOrEmpty(plainText)) return string.Empty;
 
-        // Capa 1: Encriptación Primaria
-        string firstLayer = EncryptFirstLayer(plainText);
+        byte[] data = Encoding.UTF8.GetBytes(plainText);
 
-        // Capa 2: Doble Blindaje con AES
-        return EncryptSecondLayer(firstLayer);
+        // Capa 1: Encriptación Primaria con IV dinámico
+        byte[] firstLayer = EncryptLayer(data, _key1);
+
+        // Capa 2: Doble Blindaje con AES e IV dinámico independiente
+        byte[] secondLayer = EncryptLayer(firstLayer, _aesKey);
+
+        return Convert.ToBase64String(secondLayer);
     }
 
     public string Unprotect(string protectedText)
     {
-        // Desencriptamos en orden inverso
-        string firstLayerDecrypted = DecryptSecondLayer(protectedText);
-        return DecryptFirstLayer(firstLayerDecrypted);
+        if (string.IsNullOrEmpty(protectedText)) return string.Empty;
+
+        try
+        {
+            byte[] data = Convert.FromBase64String(protectedText);
+
+            // Desencriptamos en orden inverso: primero la capa exterior (segunda llave)
+            byte[] secondLayerDecrypted = DecryptLayer(data, _aesKey);
+
+            // Luego la capa interior (primera llave)
+            byte[] originalData = DecryptLayer(secondLayerDecrypted, _key1);
+
+            return Encoding.UTF8.GetString(originalData);
+        }
+        catch (CryptographicException)
+        {
+            // En un sistema real, aquí loguearías un intento de manipulación o error de llave
+            return string.Empty;
+        }
     }
 
-    // --- MÉTODOS PRIVADOS ---
+    // --- MÉTODOS PRIVADOS DE PROCESAMIENTO ---
 
-    private string EncryptFirstLayer(string plainText)
+    private byte[] EncryptLayer(byte[] input, byte[] key)
     {
         using var aes = Aes.Create();
-        aes.Key = _key1;
-        aes.IV = _iv1;
+        aes.Key = key;
+        // aes.GenerateIV() se llama automáticamente al crear el encryptor si no se asigna uno.
 
-        using var encryptor = aes.CreateEncryptor();
-        byte[] inputBytes = Encoding.UTF8.GetBytes(plainText);
-        byte[] encryptedBytes = transform(inputBytes, encryptor);
-
-        return Convert.ToBase64String(encryptedBytes);
-    }
-
-    private string EncryptSecondLayer(string plainText)
-    {
-        using var aes = Aes.Create();
-        aes.Key = _aesKey;
-        aes.IV = _aesIv;
-        aes.Mode = CipherMode.CBC;
-        aes.Padding = PaddingMode.PKCS7;
-
-        using var encryptor = aes.CreateEncryptor();
-        byte[] inputBytes = Encoding.UTF8.GetBytes(plainText);
-        byte[] encryptedBytes = transform(inputBytes, encryptor);
-
-        return Convert.ToBase64String(encryptedBytes);
-    }
-
-    // Métodos de apoyo para evitar repetición de código (DRY)
-    private byte[] transform(byte[] input, ICryptoTransform cryptoTransform)
-    {
+        using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
         using var ms = new MemoryStream();
-        using var cs = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write);
-        cs.Write(input, 0, input.Length);
-        cs.FlushFinalBlock();
+
+        // Guardamos el IV al principio del stream para que el receptor pueda usarlo
+        ms.Write(aes.IV, 0, aes.IV.Length);
+
+        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+        {
+            cs.Write(input, 0, input.Length);
+            cs.FlushFinalBlock();
+        }
+
         return ms.ToArray();
     }
 
-    private string DecryptFirstLayer(string cipherText)
+    private byte[] DecryptLayer(byte[] input, byte[] key)
     {
         using var aes = Aes.Create();
-        aes.Key = _key1;
-        aes.IV = _iv1;
-        using var decryptor = aes.CreateDecryptor();
-        byte[] input = Convert.FromBase64String(cipherText);
-        byte[] output = transform(input, decryptor);
-        return Encoding.UTF8.GetString(output);
+        aes.Key = key;
+        int ivSize = aes.BlockSize / 8; // 16 bytes para AES
+
+        if (input.Length < ivSize) throw new CryptographicException("Invalid cipher text.");
+
+        // Extraemos el IV de los primeros 16 bytes
+        byte[] iv = new byte[ivSize];
+        Array.Copy(input, 0, iv, 0, ivSize);
+        aes.IV = iv;
+
+        // Extraemos el contenido cifrado (el resto del array)
+        int cipherTextSize = input.Length - ivSize;
+        byte[] cipherText = new byte[cipherTextSize];
+        Array.Copy(input, ivSize, cipherText, 0, cipherTextSize);
+
+        using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+        using var ms = new MemoryStream();
+        using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Write))
+        {
+            cs.Write(cipherText, 0, cipherText.Length);
+            cs.FlushFinalBlock();
+        }
+
+        return ms.ToArray();
     }
 
-    private string DecryptSecondLayer(string cipherText)
+    private byte[] StringToByteArray(string hex)
     {
-        using var aes = Aes.Create();
-        aes.Key = _aesKey;
-        aes.IV = _aesIv;
-        using var decryptor = aes.CreateDecryptor();
-        byte[] input = Convert.FromBase64String(cipherText);
-        byte[] output = transform(input, decryptor);
-        return Encoding.UTF8.GetString(output);
+        if (hex.Length % 2 != 0) throw new ArgumentException("Invalid Hex Key");
+        return Enumerable.Range(0, hex.Length / 2)
+                         .Select(x => Convert.ToByte(hex.Substring(x * 2, 2), 16))
+                         .ToArray();
     }
-
-    private byte[] StringToByteArray(string hex) =>
-        Enumerable.Range(0, hex.Length / 2).Select(x => Convert.ToByte(hex.Substring(x * 2, 2), 16)).ToArray();
 }

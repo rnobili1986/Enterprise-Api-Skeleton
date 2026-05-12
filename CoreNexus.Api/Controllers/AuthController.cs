@@ -27,7 +27,6 @@ public class AuthController : ControllerBase
             var token = _tokenService.GenerateToken(request.Username, "Administrator");
 
             // 3. Generamos el Mensaje de Bienvenida con tu DOBLE ENCRIPTACIÓN (Privacidad)
-            // Esto es lo que te diferencia de un desarrollador promedio
             var rawMessage = $"Bienvenido {request.Username}. Conexión segura establecida.";
             var secureMessage = _vaultService.Protect(rawMessage);
 
