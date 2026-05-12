@@ -1,6 +1,9 @@
 # Enterprise-Api-Skeleton: .NET Identity & Zero-Trust Foundation
 
-This repository provides a foundational architecture for **mission-critical** systems requiring the highest security standards in identity management and data integrity. Unlike standard authentication implementations, this boilerplate introduces an **End-to-End (E2E) encryption** layer for sensitive payloads, following **Zero-Knowledge** principles.
+This repository provides a **foundational architecture** for systems requiring high security standards in identity management and data integrity. 
+
+> [!IMPORTANT]
+> **Project Status: Basic Skeleton.** This is a structural mockup and foundational boilerplate. It is designed to serve as a starting point for developers to build upon, not as a plug-and-play production-ready product without further implementation.
 
 ## 🚀 Architecture & Principles
 
