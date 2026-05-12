@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CoreNexus.Domain.Interfaces;
+using CoreNexus.Api.Filters;
 
 namespace CoreNexus.Api.Controllers;
 
@@ -17,26 +18,22 @@ public class ServicesController : ControllerBase
     }
 
     /// <summary>
-    /// Recibe el mensaje cifrado del Login y lo desencripta.
+    /// Recupera y muestra el contenido del contexto de seguridad almacenado en la cookie.
     /// </summary>
-    /// <param name="encryptedMessage">El valor de 'EncryptedWelcomeMessage' obtenido en el Login</param>
     [HttpPost("decode-welcome")]
-    public IActionResult DecodeWelcome([FromBody] string encryptedMessage)
+    [ValidateUserContext] // El filtro valida la cookie y descifra el contenido antes de entrar aquí
+    public IActionResult DecodeWelcome()
     {
-        if (string.IsNullOrEmpty(encryptedMessage))
-            return BadRequest("No se proporcionó ningún mensaje cifrado.");
+        // El filtro ValidateUserContext ya hizo el trabajo pesado y guardó el resultado en HttpContext.Items
+        var decryptedMessage = HttpContext.Items["UserContext"] as string;
 
-        // El servicio extrae automáticamente los IVs dinámicos del cuerpo del mensaje
-        var decryptedMessage = _vaultService.Unprotect(encryptedMessage);
-
-        if (string.IsNullOrEmpty(decryptedMessage))
-            return BadRequest("No se pudo desencriptar el mensaje. ¿Es el formato correcto?");
-
+        // Si llegamos aquí, es porque la cookie existía y era válida.
         return Ok(new
         {
-            Status = "Mensaje Recuperado",
+            Status = "Éxito: Contexto Validado",
             OriginalContent = decryptedMessage,
-            Note = "Este mensaje fue descifrado usando las llaves internas y los IVs dinámicos del payload."
+            Source = "Información recuperada directamente de la Cookie Segura (HttpOnly)",
+            Note = "El acceso fue concedido tras validar el JWT y el sobre sellado de la Cookie."
         });
     }
 }

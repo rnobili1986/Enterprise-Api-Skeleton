@@ -30,6 +30,16 @@ public class AuthController : ControllerBase
             var rawMessage = $"Bienvenido {request.Username}. Conexión segura establecida.";
             var secureMessage = _vaultService.Protect(rawMessage);
 
+            // 4. AGREGAR LA COOKIE DE SEGURIDAD
+            // Esta cookie no es accesible por JavaScript (XSS Protection)
+            Response.Cookies.Append("X-User-Context", secureMessage, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Solo viaja por HTTPS
+                SameSite = SameSiteMode.Strict, // Previene CSRF
+                Expires = DateTime.UtcNow.AddMinutes(60)
+            });
+
             return Ok(new AuthResponse(
                 Token: token,
                 EncryptedWelcomeMessage: secureMessage,
