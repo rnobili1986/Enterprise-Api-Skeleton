@@ -44,6 +44,18 @@ In high-scale and sensitive systems, access is only the first step. This archite
 * **Security:** JWT, AES-256.
 * **Architecture:** Clean Architecture / DDD Pattern.
 
+## 📊 Observability & Security Enhancements
+
+The project has been enhanced with additional enterprise-grade capabilities:
+
+* Structured logging implemented using **Serilog**
+* HTTP request tracing using **Correlation ID middleware**
+* Centralized logging across controllers and infrastructure services
+* Security-aware logging for authentication and vault operations
+* Improved visibility of JWT generation and validation flows
+
+These improvements increase system observability, debugging capability, and audit readiness in distributed environments.
+
 ## 🚀 Roadmap & Potential Enhancements
 
 This is a living skeleton. Future improvements or production-hardening steps could include:
@@ -106,6 +118,18 @@ En sistemas de alta escala, esta arquitectura mitiga riesgos mediante:
 * **Lenguaje:** C#
 * **Seguridad:** JWT, AES-256.
 * **Arquitectura:** Clean Architecture / DDD Pattern.
+
+## 📊 Mejoras de Observabilidad y Seguridad
+
+El proyecto ha sido mejorado con capacidades adicionales de nivel enterprise:
+
+* Logging estructurado utilizando **Serilog**
+* Trazabilidad de requests mediante middleware de **Correlation ID**
+* Centralización de logs en controladores y servicios de infraestructura
+* Logging consciente de seguridad en autenticación y bóveda criptográfica
+* Mayor visibilidad en los flujos de generación y validación de JWT
+
+Estas mejoras incrementan la observabilidad, capacidad de depuración y preparación para auditorías en entornos distribuidos.
 
 ## 🚀 Próximas Mejoras y Posibles Evoluciones
 
