@@ -6,6 +6,19 @@ namespace CoreNexus.Api.Filters;
 
 public class ValidateUserContextAttribute : ActionFilterAttribute
 {
+    /// <summary>
+    /// Valida la existencia e integridad del contexto de seguridad almacenado
+    /// en la cookie "X-User-Context". Si el contenido es válido, el contexto
+    /// descifrado se almacena en <see cref="HttpContext.Items"/> para su uso
+    /// posterior durante la solicitud.
+    /// </summary>
+    /// <param name="context">
+    /// Contexto de ejecución de la acción actual.
+    /// </param>
+    /// <remarks>
+    /// Si la cookie no existe o el contenido no puede ser descifrado,
+    /// se devuelve una respuesta Unauthorized (401).
+    /// </remarks>
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var vaultService = context.HttpContext.RequestServices.GetService<ISecureVaultService>();
