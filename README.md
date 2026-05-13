@@ -44,17 +44,22 @@ In high-scale and sensitive systems, access is only the first step. This archite
 * **Security:** JWT, AES-256.
 * **Architecture:** Clean Architecture / DDD Pattern.
 
-## 📊 Observability & Security Enhancements
+## 📊 Observability & Distributed Tracing
 
-The project has been enhanced with additional enterprise-grade capabilities:
+This project includes a modern observability foundation using OpenTelemetry.
 
-* Structured logging implemented using **Serilog**
-* HTTP request tracing using **Correlation ID middleware**
-* Centralized logging across controllers and infrastructure services
-* Security-aware logging for authentication and vault operations
-* Improved visibility of JWT generation and validation flows
+### Features:
+- Distributed tracing (ASP.NET Core instrumentation)
+- HTTP client tracing
+- Service identification via `ResourceBuilder.AddService("CoreNexus.Api")`
+- Structured logging integration (Serilog ready)
+- Console exporter for development environments
 
-These improvements increase system observability, debugging capability, and audit readiness in distributed environments.
+### Benefits:
+- Full request lifecycle visibility
+- TraceId propagation across services
+- Ready for Jaeger / Grafana Tempo / Azure Application Insights
+- Correlation-ready logging architecture
 
 ## 🚀 Roadmap & Potential Enhancements
 
@@ -119,17 +124,22 @@ En sistemas de alta escala, esta arquitectura mitiga riesgos mediante:
 * **Seguridad:** JWT, AES-256.
 * **Arquitectura:** Clean Architecture / DDD Pattern.
 
-## 📊 Mejoras de Observabilidad y Seguridad
+## 📊 Observabilidad y Trazas Distribuidas
 
-El proyecto ha sido mejorado con capacidades adicionales de nivel enterprise:
+Este proyecto incluye una base moderna de observabilidad usando OpenTelemetry.
 
-* Logging estructurado utilizando **Serilog**
-* Trazabilidad de requests mediante middleware de **Correlation ID**
-* Centralización de logs en controladores y servicios de infraestructura
-* Logging consciente de seguridad en autenticación y bóveda criptográfica
-* Mayor visibilidad en los flujos de generación y validación de JWT
+### Características:
+- Trazas distribuidas en ASP.NET Core
+- Instrumentación de HTTP Client
+- Identificación del servicio con `ResourceBuilder.AddService("CoreNexus.Api")`
+- Logging estructurado (compatible con Serilog)
+- Exportador a consola para desarrollo
 
-Estas mejoras incrementan la observabilidad, capacidad de depuración y preparación para auditorías en entornos distribuidos.
+### Beneficios:
+- Visibilidad completa del ciclo de requests
+- Propagación de TraceId entre componentes
+- Preparado para Jaeger / Grafana Tempo / Azure Application Insights
+- Arquitectura lista para correlación de logs
 
 ## 🚀 Próximas Mejoras y Posibles Evoluciones
 
