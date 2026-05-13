@@ -47,7 +47,7 @@ In high-scale and sensitive systems, access is only the first step. This archite
 ## 🚀 Roadmap & Potential Enhancements
 
 This is a living skeleton. Future improvements or production-hardening steps could include:
-* **MFA Integration:** Support for Multi-Factor Authentication (TOTP, SMS).
+* **MFA Integration:** Support for Multi-Factor Authentication (TOTP, Email, SMS).
 * **External Identity Providers:** Integration with Auth0, Azure AD, or Google Identity.
 * **Refresh Token Pattern:** Implementation of persistent sessions via secure refresh tokens.
 * **Rate Limiting:** Protection against brute-force attacks at the API level.
@@ -110,7 +110,7 @@ En sistemas de alta escala, esta arquitectura mitiga riesgos mediante:
 ## 🚀 Próximas Mejoras y Posibles Evoluciones
 
 Al ser una maqueta base, existen varios caminos para robustecer el sistema:
-* **Integración de MFA:** Soporte para Autenticación de Múltiples Factores (TOTP, SMS).
+* **Integración de MFA:** Soporte para Autenticación de Múltiples Factores (TOTP, Email, SMS).
 * **Proveedores Externos:** Integración con Auth0, Azure AD o Google Identity.
 * **Patrón de Refresh Tokens:** Implementación de sesiones persistentes seguras.
 * **Rate Limiting:** Protección contra ataques de fuerza bruta.
