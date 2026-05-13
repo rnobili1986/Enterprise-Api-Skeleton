@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using CoreNexus.Api.Middleware;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -49,6 +51,21 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// OPEN TELEMETRY
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing =>
+    {
+        tracing
+            .SetSampler(new AlwaysOnSampler())
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddConsoleExporter();
+    }).ConfigureResource(resource =>
+    {
+        resource.AddService("CoreNexus.Api");
+    });
+
 
 // 4. REGISTRO DE SERVICIOS CORE (DI)
 builder.Services.AddScoped<ISecureVaultService, SecureVaultService>();
